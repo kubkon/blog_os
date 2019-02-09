@@ -1,6 +1,9 @@
 #![no_std]
 #![no_main]
 
+#[macro_use]
+mod vga_buffer;
+
 use core::panic::PanicInfo;
 
 #[panic_handler]
@@ -8,20 +11,9 @@ fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }
 
-static HELLO: &[u8] = b"Hello World!";
-
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    let vga_buffer = 0xb8000 as *mut u8;
-    let mut colour = 0xb;
-
-    for (i, &byte) in HELLO.iter().enumerate() {
-        unsafe {
-            *vga_buffer.offset(i as isize * 2) = byte;
-            colour += 1;
-            *vga_buffer.offset(i as isize * 2 + 1) = colour;
-        }
-    }
+    write!("Welcome to the BlogOS!");
 
     loop {}
 }
